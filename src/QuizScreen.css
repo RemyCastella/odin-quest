@@ -1,0 +1,47 @@
+@font-face {
+  font-family: 'Crimson';
+  src: url('./assets/fonts/Crimson.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Norse';
+  src: url('./assets/fonts/Norse.ttf') format('truetype');
+}
+
+.quiz-screen {
+  max-width: 1200px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Norse';
+}
+
+.question {
+  margin-top: 2rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-family: 'Crimson';
+}
+
+.answers-container {
+  margin-top: 1rem;
+}
+
+.answer {
+  margin-left: 1rem;
+  margin-bottom: 0.5rem;
+  background-color: var(--dark-blue);
+  color: var(--light-blue);
+  border: 2px solid transparent;
+  border-radius: 6px;
+  padding: 0.2em 1.2em;
+  font-size: 1.4rem;
+  font-weight: 500;
+  font-family: 'Crimson';
+  cursor: pointer;
+  transition: 0.25s;
+  transition-property: border-color, color;
+}
