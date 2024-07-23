@@ -8,7 +8,6 @@ import './QuizScreen.css';
 
 export default function QuizScreen(props) {
   const [questions, setQuestions] = useState([]);
-  const [mounted, setMounted] = useState(false);
   const [results, setResults] = useState(false);
   const [rank, setRank] = useState('Normie');
   const [highScore, setHighScore] = useState(
@@ -46,10 +45,6 @@ export default function QuizScreen(props) {
         setQuestions(questions);
       });
   }, [reset]);
-
-  useEffect(() => {
-    setTimeout(() => setMounted(true), 3000);
-  });
 
   useEffect(() => {
     localStorage.setItem('highScore', highScore);
@@ -194,7 +189,7 @@ export default function QuizScreen(props) {
       <div className="questions">
         {results ? resultComponents : quizComponents}
       </div>
-      {mounted && (
+      {props.mounted && (
         <button
           className="check-answers"
           onClick={results ? resetGame : checkAnswer}
