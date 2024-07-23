@@ -22,10 +22,12 @@
 body {
   margin: 0;
   height: 100vh;
+  padding: 1rem;
   background-color: var(--light-blue);
 }
 
 p {
+  margin: 0;
   font-family: 'Crimson';
 }
 
@@ -40,6 +42,10 @@ h1 {
 h2 {
   margin: 0;
   font-size: 2rem;
+}
+
+h3 {
+  margin: 0;
 }
 
 .start {
@@ -64,4 +70,26 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto var(--gold);
+}
+
+footer {
+  margin-top: 3rem;
+  width: 100vw;
+  padding: 1rem;
+  background-color: var(--dark-blue);
+  color: var(--gold);
+  font-size: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+a {
+  width: 3rem;
+  transition: 400ms ease-in-out;
+}
+
+a:hover {
+  transform: rotate(1080deg);
 }

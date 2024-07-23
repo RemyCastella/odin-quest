@@ -45,3 +45,42 @@
   transition: 0.25s;
   transition-property: border-color, color;
 }
+
+.check-answers {
+  border-radius: 8px;
+  margin-top: 2rem;
+  background-color: var(--dark-blue);
+  color: var(--light-blue);
+  border: 5px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1.5rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: 0.25s;
+  transition-property: border-color, color;
+}
+
+.rank-alltime {
+  margin-top: 2rem;
+  font-size: 2rem;
+  margin-left: 1.5rem;
+}
+
+.rank-now {
+  font-size: 3rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.score-label {
+  font-size: 1.5rem;
+  font-family: 'Crimson';
+  text-decoration: underline;
+}
+
+.highscore {
+  margin-left: 1.5rem;
+}

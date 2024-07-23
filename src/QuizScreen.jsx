@@ -2,11 +2,98 @@ import { useState, useEffect } from 'react';
 import { decode } from 'html-entities';
 import { nanoid } from 'nanoid';
 import Question from './Question';
+import QuestionResults from './QuestionResults';
+import Results from './Results';
 import './QuizScreen.css';
 
 export default function QuizScreen(props) {
-  console.log(props.screen);
   const [questions, setQuestions] = useState([]);
+  const [mounted, setMounted] = useState(false);
+  const [results, setResults] = useState(false);
+  const [rank, setRank] = useState('Normie');
+  const [highScore, setHighScore] = useState(
+    localStorage.getItem('highScore') || 0
+  );
+  const [reset, setReset] = useState(0);
+
+  useEffect(() => {
+    const url =
+      'https://opentdb.com/api.php?amount=10&category=17&difficulty=hard&type=multiple';
+
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        const questions = data.results.map((question) => {
+          const answers = [
+            ...question.incorrect_answers,
+            question.correct_answer,
+          ].map((answer) => {
+            return {
+              answer: decode(answer),
+              id: nanoid(),
+              selected: false,
+              correct: answer === question.correct_answer,
+            };
+          });
+
+          return {
+            key: nanoid(),
+            q: decode(question.question),
+            a: shuffle(answers),
+            correct: decode(question.correct_answer),
+          };
+        });
+        setQuestions(questions);
+      });
+  }, [reset]);
+
+  useEffect(() => {
+    setTimeout(() => setMounted(true), 3000);
+  });
+
+  useEffect(() => {
+    localStorage.setItem('highScore', highScore);
+  }, [highScore]);
+
+  function scoreToRank(score) {
+    let rank;
+    switch (score) {
+      case 0:
+        rank = 'Normie';
+        break;
+      case 1:
+        rank = 'Normie';
+        break;
+      case 2:
+        rank = 'Smart';
+        break;
+      case 3:
+        rank = 'Wise';
+        break;
+      case 4:
+        rank = 'Genius';
+        break;
+      case 5:
+        rank = 'Confucius';
+        break;
+      case 6:
+        rank = 'Socrates';
+        break;
+      case 7:
+        rank = 'Da Vinci';
+        break;
+      case 8:
+        rank = 'Einstein';
+        break;
+      case 9:
+        rank = 'Athena';
+        break;
+      case 10:
+        rank = 'Odin';
+        break;
+    }
+    return rank;
+  }
 
   const shuffle = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -26,7 +113,12 @@ export default function QuizScreen(props) {
         answer.selected = false;
       }
 
-      return answer.id === answerId ? { ...answer, selected: true } : answer;
+      return answer.id === answerId
+        ? {
+            ...answer,
+            selected: true,
+          }
+        : answer;
     });
 
     setQuestions((prevQs) => {
@@ -38,38 +130,48 @@ export default function QuizScreen(props) {
     });
   }
 
-  useEffect(() => {
-    const url =
-      'https://opentdb.com/api.php?amount=10&category=9&difficulty=hard&type=multiple';
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        const questions = data.results.map((question) => {
-          const answers = [
-            ...question.incorrect_answers,
-            question.correct_answer,
-          ].map((answer) => {
-            return {
-              answer: decode(answer),
-              id: nanoid(),
-              selected: false,
-            };
-          });
+  function checkAnswer() {
+    setResults(true);
+    const correct = countCorrect(questions);
+    const rank = scoreToRank(correct);
+    setRank(rank);
+    if (correct > highScore) {
+      setHighScore(correct);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
-          return {
-            key: nanoid(),
-            q: decode(question.question),
-            a: shuffle(answers),
-            correct: decode(question.correct_answer),
-            selected: false,
-          };
-        });
-        setQuestions(questions);
-      });
-  }, []);
+  function countCorrect(questions) {
+    let total = 0;
+    questions.forEach((question) => {
+      const selectedAnswer = question.a.filter((i) => i.selected === true);
+      if (selectedAnswer.length) {
+        selectedAnswer[0].answer === question.correct ? total++ : total;
+      }
+    });
+    return total;
+  }
 
-  const questionComponents = questions.map((question, index) => (
+  function resetGame() {
+    setResults(false);
+    setReset((prev) => prev + 1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  const quizComponents = questions.map((question, index) => (
     <Question
+      key={question.key}
+      id={question.key}
+      index={index + 1}
+      question={question.q}
+      answers={question.a}
+      correct={question.correct}
+      selectAnswer={selectAnswer}
+    />
+  ));
+
+  const resultComponents = questions.map((question, index) => (
+    <QuestionResults
       key={question.key}
       id={question.key}
       index={index + 1}
@@ -77,14 +179,29 @@ export default function QuizScreen(props) {
       answers={question.a}
       selected={question.selected}
       correct={question.correct}
-      selectAnswer={selectAnswer}
     />
   ));
 
   return (
     <div className="quiz-screen">
       <h1>Odin Quest</h1>
-      <div className="questions">{questionComponents}</div>
+      <Results
+        rank={rank}
+        results={results}
+        highScore={JSON.parse(highScore)}
+        scoreToRank={scoreToRank}
+      />
+      <div className="questions">
+        {results ? resultComponents : quizComponents}
+      </div>
+      {mounted && (
+        <button
+          className="check-answers"
+          onClick={results ? resetGame : checkAnswer}
+        >
+          {results ? 'Try again' : 'Check answers'}
+        </button>
+      )}
     </div>
   );
 }
