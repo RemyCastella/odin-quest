@@ -1,6 +1,11 @@
 import React from 'react';
 
-export default function CoverScreen(props) {
+interface CoverScreenProps {
+  gameLogo: string,
+  startQuiz: () => void
+}
+
+export default function CoverScreen(props: CoverScreenProps) {
   return (
     <>
       <img src={props.gameLogo} alt="game logo" className="game-logo" />
