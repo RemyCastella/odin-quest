@@ -7,9 +7,9 @@ import QuizScreen from './QuizScreen';
 import Footer from './Footer';
 
 function App() {
-  const [screen, setScreen] = useState('cover');
+  const [screen, setScreen] = useState<string>('cover');
 
-  function startQuiz() {
+  function startQuiz(): void {
     setScreen('quiz');
   }
 
