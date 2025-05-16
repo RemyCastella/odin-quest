@@ -191,7 +191,7 @@ export default function QuizScreen() {
       <div className="questions">
         {results ? resultComponents : quizComponents}
       </div>
-      {mounted && (
+      {props.mounted && (
         <button
           className="check-answers"
           onClick={results ? resetGame : checkAnswer}
