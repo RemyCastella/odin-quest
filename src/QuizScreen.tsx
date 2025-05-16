@@ -100,31 +100,54 @@ export default function QuizScreen() {
     return array;
   };
 
-  function selectAnswer(questionId, answerId) {
-    const targetQuestion = questions.filter(
-      (question) => question.key === questionId
-    );
+  function selectAnswer(questionId: string, answerId: string) {
+    setQuestions(prevQuestions => {
+      return prevQuestions.map(question => {
+        if(question.key === questionId) {
+          return question
+        }
 
-    const answerSelected = targetQuestion[0].a.map((answer) => {
-      if (answer.selected) {
-        answer.selected = false;
-      }
-
-      return answer.id === answerId
-        ? {
+        const newAnswers: AnswerData[] = question.a.map(answer => {
+          return {
             ...answer,
-            selected: true,
+            selected: answer.id === answerId
           }
-        : answer;
-    });
+        })
 
-    setQuestions((prevQs) => {
-      return prevQs.map((question) => {
-        return question.a[0].id === answerSelected[0].id
-          ? { ...question, a: answerSelected }
-          : question;
-      });
-    });
+        return {
+          ...question,
+          a: newAnswers
+        }
+      })
+    })
+
+
+
+
+    // const targetQuestion: QuizQuestionData[] = questions.filter(
+    //   (question) => question.key === questionId
+    // );
+
+    // const answerSelected: AnswerData[] = targetQuestion[0].a.map((answer) => {
+    //   if (answer.selected) {
+    //     answer.selected = false;
+    //   }
+
+    //   return answer.id === answerId
+    //     ? {
+    //         ...answer,
+    //         selected: true,
+    //       }
+    //     : answer;
+    // });
+
+    // setQuestions((prevQs) => {
+    //   return prevQs.map((question) => {
+    //     return question.a[0].id === answerSelected[0].id
+    //       ? { ...question, a: answerSelected }
+    //       : question;
+    //   });
+    // });
   }
 
   function checkAnswer() {
@@ -191,14 +214,13 @@ export default function QuizScreen() {
       <div className="questions">
         {results ? resultComponents : quizComponents}
       </div>
-      {props.mounted && (
-        <button
-          className="check-answers"
-          onClick={results ? resetGame : checkAnswer}
-        >
-          {results ? 'Try again' : 'Check answers'}
-        </button>
-      )}
+
+      <button
+        className="check-answers"
+        onClick={results ? resetGame : checkAnswer}
+      >
+        {results ? 'Try again' : 'Check answers'}
+      </button>
     </div>
   );
 }
