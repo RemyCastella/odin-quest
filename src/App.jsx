@@ -9,9 +9,6 @@ import Footer from './Footer';
 function App() {
   const [screen, setScreen] = useState('cover');
 
-  //move mounted state here, pass QuizScreen mounted state,
-  //render footer only when mounted
-
   function startQuiz() {
     setScreen('quiz');
   }
