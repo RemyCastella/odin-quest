@@ -1,20 +1,21 @@
 import { useState, useEffect } from 'react';
 import { decode } from 'html-entities';
 import { nanoid } from 'nanoid';
+import { RawQuestionData, QuizQuestionData, AnswerData } from './types/quiz';
 import Question from './Question';
 import QuestionResults from './QuestionResults';
 import Results from './Results';
 import './QuizScreen.css';
 
-export default function QuizScreen(props) {
-  const [questions, setQuestions] = useState([]);
-  const [mounted, setMounted] = useState(false);
-  const [results, setResults] = useState(false);
-  const [rank, setRank] = useState('Normie');
-  const [highScore, setHighScore] = useState(
-    localStorage.getItem('highScore') || 0
+export default function QuizScreen() {
+  const [questions, setQuestions] = useState<QuizQuestionData[]>([]);
+  const [mounted, setMounted] = useState<boolean>(false);
+  const [results, setResults] = useState<boolean>(false);
+  const [rank, setRank] = useState<string>('Normie');
+  const [highScore, setHighScore] = useState<number>(
+    Number(localStorage.getItem('highScore')) || 0
   );
-  const [reset, setReset] = useState(0);
+  const [reset, setReset] = useState<number>(0);
 
   useEffect(() => {
     const url =
@@ -23,7 +24,7 @@ export default function QuizScreen(props) {
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        const questions = data.results.map((question) => {
+        const questions = data.results.map((question: RawQuestionData) => {
           const answers = [
             ...question.incorrect_answers,
             question.correct_answer,
@@ -48,15 +49,11 @@ export default function QuizScreen(props) {
   }, [reset]);
 
   useEffect(() => {
-    setTimeout(() => setMounted(true), 3000);
-  });
-
-  useEffect(() => {
-    localStorage.setItem('highScore', highScore);
+    localStorage.setItem('highScore', JSON.stringify(highScore));
   }, [highScore]);
 
-  function scoreToRank(score) {
-    let rank;
+  function scoreToRank(score: number) {
+    let rank: string = "Normie";
     switch (score) {
       case 0:
         rank = 'Normie';
@@ -95,7 +92,7 @@ export default function QuizScreen(props) {
     return rank;
   }
 
-  const shuffle = (array) => {
+  const shuffle = (array: AnswerData[]) => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
