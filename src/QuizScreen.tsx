@@ -4,8 +4,9 @@ import { nanoid } from 'nanoid';
 import { RawQuestionData, QuizQuestionData, AnswerData } from './types/quiz';
 import Question from './Question';
 import QuestionResults from './QuestionResults';
-import Results from './Results';
 import './QuizScreen.css';
+import Results from './Results';
+
 
 export default function QuizScreen() {
   const [questions, setQuestions] = useState<QuizQuestionData[]>([]);
@@ -52,7 +53,7 @@ export default function QuizScreen() {
     localStorage.setItem('highScore', JSON.stringify(highScore));
   }, [highScore]);
 
-  function scoreToRank(score: number) {
+  function scoreToRank(score: number): string {
     let rank: string = "Normie";
     switch (score) {
       case 0:
@@ -101,53 +102,30 @@ export default function QuizScreen() {
   };
 
   function selectAnswer(questionId: string, answerId: string) {
-    setQuestions(prevQuestions => {
-      return prevQuestions.map(question => {
-        if(question.key === questionId) {
-          return question
-        }
+    const targetQuestion: QuizQuestionData[] = questions.filter(
+      (question) => question.key === questionId
+    );
 
-        const newAnswers: AnswerData[] = question.a.map(answer => {
-          return {
+    const answerSelected: AnswerData[] = targetQuestion[0].a.map((answer) => {
+      if (answer.selected) {
+        answer.selected = false;
+      }
+
+      return answer.id === answerId
+        ? {
             ...answer,
-            selected: answer.id === answerId
+            selected: true,
           }
-        })
+        : answer;
+    });
 
-        return {
-          ...question,
-          a: newAnswers
-        }
-      })
-    })
-
-
-
-
-    // const targetQuestion: QuizQuestionData[] = questions.filter(
-    //   (question) => question.key === questionId
-    // );
-
-    // const answerSelected: AnswerData[] = targetQuestion[0].a.map((answer) => {
-    //   if (answer.selected) {
-    //     answer.selected = false;
-    //   }
-
-    //   return answer.id === answerId
-    //     ? {
-    //         ...answer,
-    //         selected: true,
-    //       }
-    //     : answer;
-    // });
-
-    // setQuestions((prevQs) => {
-    //   return prevQs.map((question) => {
-    //     return question.a[0].id === answerSelected[0].id
-    //       ? { ...question, a: answerSelected }
-    //       : question;
-    //   });
-    // });
+    setQuestions((prevQs) => {
+      return prevQs.map((question) => {
+        return question.a[0].id === answerSelected[0].id
+          ? { ...question, a: answerSelected }
+          : question;
+      });
+    });
   }
 
   function checkAnswer() {
@@ -161,7 +139,7 @@ export default function QuizScreen() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function countCorrect(questions) {
+  function countCorrect(questions: QuizQuestionData[]): number {
     let total = 0;
     questions.forEach((question) => {
       const selectedAnswer = question.a.filter((i) => i.selected === true);
@@ -197,7 +175,6 @@ export default function QuizScreen() {
       index={index + 1}
       question={question.q}
       answers={question.a}
-      selected={question.selected}
       correct={question.correct}
     />
   ));
@@ -208,8 +185,7 @@ export default function QuizScreen() {
       <Results
         rank={rank}
         results={results}
-        highScore={JSON.parse(highScore)}
-        scoreToRank={scoreToRank}
+        highScore={highScore}
       />
       <div className="questions">
         {results ? resultComponents : quizComponents}

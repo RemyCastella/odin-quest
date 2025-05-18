@@ -1,6 +1,17 @@
 import React from 'react';
+import { AnswerData } from './types/quiz';
 
-export default function Question(props) {
+interface QuestionProps {
+  id: string,
+  index: number,
+  question: string,
+  answers: AnswerData[],
+  correct: string,
+  selectAnswer: (questionId: string, answerId: string) => void
+}
+
+export default function Question(props: QuestionProps) {
+
   return (
     <div className="question">
       <h2>{`${props.index}. ${props.question}`}</h2>

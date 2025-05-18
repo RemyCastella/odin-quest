@@ -1,6 +1,16 @@
 import React from 'react';
+import { AnswerData } from './types/quiz';
 
-export default function QuestionResults(props) {
+interface QuestionResultsProps {
+  id: string,
+  index: number,
+  question: string,
+  answers: AnswerData[],
+  correct: string,
+}
+
+export default function QuestionResults(props: QuestionResultsProps) {
+
   const a0Styles = props.answers[0].selected
     ? {
         borderColor: props.answers[0].correct ? 'green' : 'red',

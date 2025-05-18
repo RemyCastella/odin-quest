@@ -1,13 +1,17 @@
 import React from 'react';
 
-export default function Results(props) {
-  let score = JSON.parse(props.highScore);
+interface ResultsProps {
+  highScore: number,
+  rank: string,
+  results: boolean
+}
 
+export default function Results(props: ResultsProps) {
   return (
     <div className="results-container">
       <h3 className="rank-alltime">
         <span className="score-label">Highscore:</span>
-        <span className="highscore">{props.scoreToRank(props.highScore)}</span>
+        <span className="highscore">{props.rank}</span>
       </h3>
       {props.results && (
         <h3 className="rank-now">
